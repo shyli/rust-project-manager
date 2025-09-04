@@ -6,12 +6,12 @@ mod storage;
 mod time_calculator;
 mod ui;
 
+use eframe::egui;
 use storage::Storage;
-use ui::{run_app, App};
+use ui::App;
 
-fn main() -> std::io::Result<()> {
-    println!("启动项目管理系统TUI界面...");
-    println!("按 H 键查看帮助，按 Q 键退出程序");
+fn main() -> eframe::Result<()> {
+    println!("启动项目管理系统GUI界面...");
 
     // 初始化存储
     let storage = Storage::new("./data".to_string());
@@ -28,18 +28,43 @@ fn main() -> std::io::Result<()> {
         }
     };
 
-    // 运行应用
-    let mut app = app;
-    let result = run_app(&mut app);
+    // 运行egui应用
+    let native_options = eframe::NativeOptions {
+        viewport: egui::ViewportBuilder::default().with_inner_size([800.0, 600.0]),
+        ..Default::default()
+    };
 
-    // 保存数据
-    if let Err(e) = storage.save_data(&app.project_manager, &app.event_manager) {
-        eprintln!("保存数据失败: {}", e);
-    } else {
-        println!("数据已保存");
+    eframe::run_native(
+        "项目管理系统",
+        native_options,
+        Box::new(|_cc| {
+            Box::new(EguiApp::new(app, storage))
+        }),
+    )
+}
+
+struct EguiApp {
+    app: App,
+    storage: Storage,
+}
+
+impl EguiApp {
+    fn new(app: App, storage: Storage) -> Self {
+        Self { app, storage }
+    }
+}
+
+impl eframe::App for EguiApp {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        self.app.update(ctx);
     }
 
-    println!("应用已退出");
-
-    result
+    fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
+        // 保存数据
+        if let Err(e) = self.storage.save_data(&self.app.project_manager, &self.app.event_manager) {
+            eprintln!("保存数据失败: {}", e);
+        } else {
+            println!("数据已保存");
+        }
+    }
 }

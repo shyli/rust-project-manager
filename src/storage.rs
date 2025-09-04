@@ -5,8 +5,6 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::io::{self, Read, Write};
 use std::path::Path;
-use tempfile;
-use uuid::Uuid;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AppData {

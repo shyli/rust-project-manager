@@ -1,5 +1,5 @@
 use crate::models::{ProjectTimeBreakdown, TimeRecord};
-use chrono::{DateTime, Datelike, Utc, Weekday};
+use chrono::{DateTime, Datelike, Utc};
 use std::collections::HashMap;
 use uuid::Uuid;
 

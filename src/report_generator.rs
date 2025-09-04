@@ -1,4 +1,4 @@
-use crate::models::{ProjectTimeBreakdown, TimeRecord, WeeklyReport};
+use crate::models::{TimeRecord, WeeklyReport};
 use crate::time_calculator::TimeCalculator;
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
