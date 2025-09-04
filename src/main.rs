@@ -37,7 +37,31 @@ fn main() -> eframe::Result<()> {
     eframe::run_native(
         "项目管理系统",
         native_options,
-        Box::new(|_cc| {
+        Box::new(|cc| {
+            // 设置中文字体
+            let mut fonts = egui::FontDefinitions::default();
+            
+            // 加载Noto Sans SC字体
+            fonts.font_data.insert(
+                "noto_sans_sc".to_owned(),
+                egui::FontData::from_static(include_bytes!("../assets/NotoSansSC-Regular.ttf")),
+            );
+            
+            // 将中文字体设置为默认字体
+            fonts
+                .families
+                .entry(egui::FontFamily::Proportional)
+                .or_default()
+                .insert(0, "noto_sans_sc".to_owned());
+            
+            fonts
+                .families
+                .entry(egui::FontFamily::Monospace)
+                .or_default()
+                .push("noto_sans_sc".to_owned());
+            
+            cc.egui_ctx.set_fonts(fonts);
+
             Box::new(EguiApp::new(app, storage))
         }),
     )
